@@ -1,0 +1,121 @@
+﻿@model List<WebApplication2.Models.slider>
+@{
+    ViewBag.Title = "Slider";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="choose_box remov_padd">
+    @if (TempData["success_msg"] != null)
+    {
+        <div id="success-alert" class="alert alert-success" role="alert"><strong>Success</strong>&nbsp;@TempData["success_msg"]</div>
+    }
+    <div class="sub_page">
+
+        <h2>Slider</h2>
+
+        <p>&nbsp;</p>
+        @using (Ajax.BeginForm("slider", "Admin",
+                            new AjaxOptions { UpdateTargetId = "grid-list", HttpMethod = "get", LoadingElementId = "loading", OnBegin = "beginPaging", OnSuccess = "successPaging", OnFailure = "failurePaging" },
+                            new { id = "frmsliders" }))
+        {
+            <div class="row" style="margin: 0px">
+                <div class="col-md-8 pull-left">
+                    <div class="input-append">
+                        @Html.TextBox("slidername", null, new { @placeholder = "Slider Name" })
+                        <button class="btn" type="submit">Search</button>
+                    </div>
+                </div>
+                <div class="col-md-4 pull-right"><a href="@Url.Action("bmslider", "Admin")" class="btn btn-primary">Add New</a></div>
+            </div>
+            <p>&nbsp;</p>
+            <div id="grid-list">
+                @{ Html.RenderPartial("_AjaxSlider", Model); }
+
+            </div>
+        }
+    </div>
+</div>
+<!-- Delete dialog Begin -->
+<div id="delete-dialog" title="Confirmation" style="display: none;">
+    <p>Are you sure you want to delete this Slider?</p>
+</div>
+<!-- Return dialog Begin -->
+<div id="Return-dialog" title="Confirmation" style="display: none;">
+    <p>Successfully Deleted</p>
+</div>
+@section scripts{
+
+    <script type="text/javascript">
+        // delete Link
+        $('.delete-link').click(function () {
+
+            var deleteLinkObj = $(this);  //for future use
+
+            $("#delete-dialog").dialog({
+                title: "Confirmation",
+                buttons: {
+                    Continue: function () {
+                        $.post(deleteLinkObj[0].href, function (data) {  //Post to action
+                            if (data.Status == 'true') {
+                                var tr = deleteLinkObj.parents('tr:first');
+                                tr.hide('fast'); //Hide Row
+                                $("#Return-dialog").dialog({
+                                    title: "Success",
+                                    buttons: {
+                                        Ok: function () {
+                                            $(this).dialog('close');
+                                        }
+                                    }
+                                });
+                            }
+                            else {
+                                //(optional) Display Error
+                            }
+                        });
+                        $(this).dialog('close');
+                    },
+                    Close: function () {
+                        $(this).dialog('close');
+                    }
+                },
+                width: 400,
+                closeOnEscape: false,
+                draggable: false,
+                resizable: false,
+                modal: true
+            });
+            return false; // prevents the default behaviour
+
+        });
+        $(document).ready(function () {
+            $("#success-alert").fadeTo(2000, 500).slideUp(500, function () {
+                $("#success-alert").alert('close');
+            });
+        });
+    </script>
+    <script type="text/javascript">
+
+        function beginPaging(args) {
+            // Animate
+            $('#grid-list').fadeOut('normal');
+        }
+
+        function successPaging() {
+            // Animate
+            $('#grid-list').fadeIn('normal');
+            $('a').tooltip();
+        }
+
+        function failurePaging() {
+            alert("Could not retrieve list.");
+        }
+
+    </script>
+    <script type="text/javascript" src="@Url.Content("~/JQLightBox/js/jquery.lightbox-0.5.js")"></script>
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/JQLightBox/css/jquery.lightbox-0.5.css")" media="screen" />
+    <script type="text/javascript">
+        $(function () {
+            $('.lightbox-img').lightBox();
+        });
+    </script>
+}

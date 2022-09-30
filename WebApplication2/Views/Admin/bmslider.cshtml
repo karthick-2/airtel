@@ -1,0 +1,59 @@
+﻿@model WebApplication2.Models.slider
+
+@{
+    ViewBag.Title = "Slider For bmobile-Vodafone";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="choose_box remov_padd">
+    @using (Html.BeginForm("bmslider", "Admin", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        if (ViewBag.Msg != null)
+        {
+            <div class="alert alert-danger" role="alert"><strong>Error!</strong>&nbsp;@ViewBag.Msg</div>
+        }
+        <div class="sub_page">
+            <h2>Slider</h2>
+            <p>&nbsp;</p>
+            @Html.HiddenFor(m => m.id)
+            @Html.HiddenFor(m => m.sliderimg)
+            <div class="page_box">
+                <div class="left_side">Image Title</div>
+                <div class="right_side">
+                    @Html.TextBoxFor(m => m.slidername)
+                @Html.ValidationMessageFor(m => m.slidername)
+            </div>
+        </div>
+        <div class="page_box">
+            <div class="left_side">Upload Image</div>
+            <div class="right_side">
+                @Html.TextBox("sliderimg", null, new { @type = "file" })@if (ViewBag.ErMsg != null)
+            {<span class="field-validation-error">@ViewBag.ErMsg</span>}
+                @if (Model.sliderimg != null)
+                {<a class="lightbox-img" href="/Upload/Banners/@Model.sliderimg">View Image</a>}
+            </div>
+        </div>
+        <div class="page_box">
+            <div class="left_side">Redirect Url</div>
+            <div class="right_side">@Html.TextBoxFor(m => m.redirecturl, new { @style = "width:500px;" })</div>
+        </div>
+        <div class="page_box">
+            <div class="left_side">Order by</div>
+            <div class="right_side">@Html.TextBoxFor(m => m.imageorder)</div>
+            @Html.ValidationMessageFor(m => m.imageorder)
+        </div>
+        <div class="page_box">
+            <div class="left_side">Active</div>
+            <div class="right_side">@Html.CheckBoxFor(m => m.isactive)</div>
+        </div>
+        <div class="page_box">
+            <div class="left_side">&nbsp;</div>
+            <div class="right_side">
+                <input type="submit" value="submit" />&nbsp;
+                <input type="button" id="BtnBack" value="Back" onclick="window.location ='/Admin/slider'" />
+            </div>
+        </div>
+    </div>
+}
+
+</div>
